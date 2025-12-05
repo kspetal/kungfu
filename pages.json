@@ -1,0 +1,62 @@
+{
+  "pages": [
+    {
+      "path": "pages/students/index",
+      "style": {
+        "navigationBarTitleText": "学员管理",
+        "enablePullDownRefresh": true,
+        "backgroundColor": "#F5F6FA"
+      }
+    },
+    {
+      "path": "pages/stats/index",
+      "style": {
+        "navigationBarTitleText": "数据统计",
+        "enablePullDownRefresh": true,
+        "backgroundColor": "#F5F6FA"
+      }
+    },
+    {
+      "path": "pages/student-detail/index",
+      "style": {
+        "navigationBarTitleText": "学员详情",
+        "enablePullDownRefresh": false,
+        "backgroundColor": "#FFFFFF"
+      }
+    },
+    {
+      "path": "pages/student-form/index",
+      "style": {
+        "navigationBarTitleText": "学员信息",
+        "backgroundColor": "#FFFFFF"
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "学员管理",
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "backgroundColor": "#F5F6FA"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#2979FF",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/students/index",
+        "text": "学员管理",
+        "iconPath": "static/tab-students.png",
+        "selectedIconPath": "static/tab-students-active.png"
+      },
+      {
+        "pagePath": "pages/stats/index",
+        "text": "数据统计",
+        "iconPath": "static/tab-stats.png",
+        "selectedIconPath": "static/tab-stats-active.png"
+      }
+    ]
+  },
+  "uniIdRouter": {}
+}

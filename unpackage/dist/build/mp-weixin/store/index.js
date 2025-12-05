@@ -1,0 +1,1 @@
+"use strict";const e=require("../common/vendor.js").reactive({students:[],statsSummary:null,revenueRank:[],expiringStudents:[]});exports.useGlobalStore=function(){return{state:e,setStudents:t=>{e.students=t||[]},setStatsSummary:t=>{e.statsSummary=t},setRevenueRank:t=>{e.revenueRank=t||[]},setExpiringStudents:t=>{e.expiringStudents=t||[]}}};

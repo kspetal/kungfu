@@ -1,0 +1,36 @@
+{
+  "pages": [
+    "pages/students/index",
+    "pages/stats/index",
+    "pages/student-detail/index",
+    "pages/student-form/index"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "学员管理",
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "backgroundColor": "#F5F6FA"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#2979FF",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/students/index",
+        "text": "学员管理",
+        "iconPath": "static/tab-students.png",
+        "selectedIconPath": "static/tab-students-active.png"
+      },
+      {
+        "pagePath": "pages/stats/index",
+        "text": "数据统计",
+        "iconPath": "static/tab-stats.png",
+        "selectedIconPath": "static/tab-stats-active.png"
+      }
+    ]
+  },
+  "permission": {},
+  "usingComponents": {}
+}
