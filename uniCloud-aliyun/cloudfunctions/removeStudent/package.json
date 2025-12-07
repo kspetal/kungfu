@@ -1,0 +1,7 @@
+{
+  "name": "removeStudent",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

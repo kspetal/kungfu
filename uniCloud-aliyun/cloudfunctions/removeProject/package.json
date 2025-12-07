@@ -1,0 +1,7 @@
+{
+  "name": "removeProject",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}
