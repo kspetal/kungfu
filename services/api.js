@@ -94,4 +94,28 @@ export function createPayment(id, data) {
   })
 }
 
+// 课程记录相关接口
+export function fetchStudentRecords(studentId) {
+  return request({
+    url: `/students/${studentId}/records`,
+    method: 'GET'
+  })
+}
+
+export function createRecord(data) {
+  return request({
+    url: '/records',
+    method: 'POST',
+    data
+  })
+}
+
+export function updateRecord(id, data) {
+  return request({
+    url: `/records/${id}`,
+    method: 'PUT',
+    data
+  })
+}
+
 

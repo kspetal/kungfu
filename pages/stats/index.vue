@@ -51,14 +51,14 @@
           class="expire-card"
         >
           <view class="expire-left">
-            <image class="avatar" :src="item.avatarUrl || defaultAvatar" />
+            <image class="avatar" :src="item.avatar_url || defaultAvatar" />
             <view>
               <view class="expire-name">{{ item.name }}</view>
-              <view class="expire-project">{{ item.project }}</view>
+              <view class="expire-project">{{ item.project_name || '-' }}</view>
             </view>
           </view>
           <view class="expire-date-tag">
-            {{ item.endDate }}
+            {{ formatDate(item.end_time) }}
           </view>
         </view>
         <view v-if="expiringStudents.length === 0" class="empty">
@@ -119,6 +119,10 @@ export default {
         return (num / 10000).toFixed(1) + 'w'
       }
       return Number(num).toLocaleString('zh-CN')
+    },
+    formatDate(dateStr) {
+      if (!dateStr) return ''
+      return dateStr.split(' ')[0]
     }
   }
 }

@@ -39,46 +39,149 @@
 
 ## 3. 信息结构与数据模型
 
-### 3.1 数据模型（示例）
+### 3.1 数据模型
 ```
 Student {
-  id: string
-  name: string
-  gender: 'M'|'F'
-  age: number
-  birthMonth: string  // YYYY-MM
-  school: string
-  parentPhone: string
-  parentWechat: string
-  address: string
-  project: string     // 瑜伽/私教课…
-  cardType: string
-  status: 'ongoing'|'completed'|'paused'
-  startDate: string   // YYYY-MM-DD
-  endDate: string
-  totalLessons: number
-  remainingLessons: number
-  tuition: number
-  deposit: number
-  totalPaid: number
-  remark1: string
-  remark2: string
-  sourceChannel: 1|2|3|4|5
-  avatarUrl: string
-  payments: PaymentRecord[]
+  "bsonType": "object",
+  "description": "学员信息",
+  "required": [
+    "name"
+  ],
+  "properties": {
+    "_id": {
+      "description": "ID，系统自动生成"
+    },
+    "name": {
+      "description": "姓名"
+    },
+    "birth_date": {
+      "description": "出生日期"
+    },
+    "gender": {
+      "description": "性别"
+    },
+    "school": {
+      "description": "学校名称"
+    },
+    "parent_phone": {
+      "description": "家长电话"
+    },
+    "parent_wx": {
+      "description": "家长微信"
+    },
+    "address": {
+      "description": "家庭住址"
+    },
+    "avatar_url": {
+      "description": "图像"
+    },
+    "source": {
+      "description": "从何处得知的信息来源"
+    },
+    "status": {
+      "description": "状态: 在学、暂停、已退学"
+    },
+    "create_time": {
+      "description": "创建时间, 格式: yyyy-MM-dd HH:mm:ss"
+    },
+    "start_time": {
+      "description": "开始时间, 格式: yyyy-MM-dd HH:mm:ss"
+    },
+    "end_time": {
+      "description": "结束时间, 格式: yyyy-MM-dd HH:mm:ss"
+    },
+    "course_date": {
+      "description": "学时时长"
+    },
+    "first_time": {
+      "description": "第一次就读时间, 格式: yyyy-MM-dd HH:mm:ss"
+    },
+    "last_time": {
+      "description": "最后一次就读时间, 格式: yyyy-MM-dd HH:mm:ss"
+    }
+  }
 }
 
-PaymentRecord {
-  id: string
-  studentId: string
-  date: string
-  project: string
-  amount: number
-  method: 'cash'|'wechat'|'alipay'|'bank'
-  type: 'deposit'|'full'|'regular'
-  remark: string
-  operator: string
-  receiptUrl?: string
+Record {
+  "bsonType": "object",
+  "required": [],
+  "description": "学员缴费课程记录",
+  "properties": {
+    "_id": {
+      "description": "ID，系统自动生成"
+    },
+    "student_id": {
+      "description": "学生ID"
+    },
+    "project_name": {
+      "description": "项目名称"
+    },
+    "status": {
+      "description": "状态: 0-已过期, 1-生效中, 2-暂停中"
+    },
+    "card_type": {
+      "description": "卡类型"
+    },
+    "start_time": {
+      "description": "开始时间, 格式: yyyy-MM-dd HH:mm:ss"
+    },
+    "end_time": {
+      "description": "结束时间, 格式: yyyy-MM-dd HH:mm:ss"
+    },
+    "deposit": {
+      "description": "定金"
+    },
+    "total_fee": {
+      "description": "总费用"
+    },
+    "create_time": {
+      "description": "创建时间, 格式: yyyy-MM-dd HH:mm:ss"
+    }
+  }
+}
+
+Project {
+  "bsonType": "object",
+  "description": "课程项目列表",
+  "required": [],
+  "permission": {
+    "read": true,
+    "create": true,
+    "update": true,
+    "delete": true
+  },
+  "properties": {
+    "_id": {
+      "description": "ID，系统自动生成"
+    },
+    "project_name": {
+      "description": "项目名称"
+    },
+    "card_type": {
+      "description": "卡类型"
+    },
+    "card_date": {
+      "description": "卡时间"
+    },
+    "start_time": {
+      "description": "开始时间"
+    },
+    "end_time": {
+      "description": "结束时间"
+    },
+    "deposit": {
+      "description": "定金"
+    },
+    "total_fee": {
+      "description": "总费用"
+    },
+    "create_time": {
+      "description": "创建时间, 格式: yyyy-MM-dd HH:mm:ss"
+    },
+    "status": {
+      "description": "状态：1-可用，0-不可用"
+    }
+  }
 }
 ```
 

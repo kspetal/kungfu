@@ -1,8 +1,20 @@
 'use strict';
+
+const db = uniCloud.databaseForJQL()
+
 exports.main = async (event, context) => {
-	//event为客户端上传的参数
-	console.log('event : ', event)
-	
-	//返回数据给客户端
-	return event
+	try {
+		const student = event.student;
+		const studentRes = await db.collection('student').add(student)
+		console("student add: " + JSON.stringify(studentRes))
+		return {
+			code: 0,
+			msg: 'success'
+		};
+	} catch (err) {
+		return {
+			code: -1,
+			msg: err.message
+		};
+	}
 };

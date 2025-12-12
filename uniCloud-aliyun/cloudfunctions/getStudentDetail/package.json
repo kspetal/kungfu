@@ -1,0 +1,7 @@
+{
+  "name": "getStudentDetail",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

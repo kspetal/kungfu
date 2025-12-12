@@ -17,9 +17,32 @@
       }
     },
     {
+      "path": "pages/projects/index",
+      "style": {
+        "navigationBarTitleText": "项目管理",
+        "enablePullDownRefresh": true,
+        "backgroundColor": "#F5F6FA"
+      }
+    },
+    {
+      "path": "pages/projects/form",
+      "style": {
+        "navigationBarTitleText": "项目信息",
+        "backgroundColor": "#FFFFFF"
+      }
+    },
+    {
       "path": "pages/student-detail/index",
       "style": {
         "navigationBarTitleText": "学员详情",
+        "enablePullDownRefresh": false,
+        "backgroundColor": "#FFFFFF"
+      }
+    },
+    {
+      "path": "pages/student-detail/payment-form",
+      "style": {
+        "navigationBarTitleText": "添加缴费记录",
         "enablePullDownRefresh": false,
         "backgroundColor": "#FFFFFF"
       }
@@ -55,6 +78,12 @@
         "text": "数据统计",
         "iconPath": "static/tab-stats.png",
         "selectedIconPath": "static/tab-stats-active.png"
+      },
+      {
+        "pagePath": "pages/projects/index",
+        "text": "项目管理",
+        "iconPath": "static/tab-projects.png",
+        "selectedIconPath": "static/tab-projects-active.png"
       }
     ]
   },
