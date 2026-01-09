@@ -1,8 +1,20 @@
 'use strict';
 exports.main = async (event, context) => {
-	//event为客户端上传的参数
-	console.log('event : ', event)
-	
-	//返回数据给客户端
-	return event
+	try {
+		let student = event.student;
+		delete student._id
+		const studentRes = await db.collection('student').where({
+			_id: student._id
+		}).update(student);
+		// console.log("update student: " + JSON.stringify(studentRes))
+		return {
+			code: 0,
+			msg: 'success',
+		};
+	} catch (err) {
+		return {
+			code: -1,
+			msg: err.message
+		};
+	}
 };

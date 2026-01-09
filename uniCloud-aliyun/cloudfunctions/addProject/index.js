@@ -5,8 +5,7 @@ const db = uniCloud.databaseForJQL()
 exports.main = async (event, context) => {
 	try {
 		const project = event.project;
-		const projectRes = await db.collection('project').add(project)
-		console("project add: " + JSON.stringify(projectRes))
+		await db.collection('project').add(project)
 		return {
 			code: 0,
 			msg: 'success'

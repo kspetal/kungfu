@@ -1,6 +1,8 @@
 {
   "name": "removeRecord",
-  "dependencies": {},
+  "dependencies": {
+    "util-common": "file:../common/util-common"
+  },
   "extensions": {
     "uni-cloud-jql": {}
   }

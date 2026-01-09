@@ -5,7 +5,7 @@ const db = uniCloud.databaseForJQL()
 exports.main = async (event, context) => {
 	try {
 		const studentRes = await db.collection('student').where({
-			_id: id
+			_id: event.id
 		}).remove();
 		console.log("remove stduent: " + JSON.stringify(studentRes))
 		const recordRes = await db.collection('record').where({

@@ -73,18 +73,17 @@
 		},
 		onLoad() {
 			this.loadData(true)
-			console.log("onload")
 		},
 		onReady() {
 			const sys = uni.getSystemInfoSync();
-			// 粗略估算顶部高度：搜索栏(120rpx≈60px) + 安全区 ≈ 80px
-			const topBarHeight = 80; // 单位 px
+			// 更精确地计算顶部高度：搜索栏高度 + padding + 安全区
+			// 搜索栏高度约 80rpx (40px) + padding 32rpx (16px) + 安全区约 20px = 约 76px
+			const topBarHeight = 76; // 单位 px
 			this.listHeight = sys.windowHeight - topBarHeight;
 		},
 		methods: {
 			async loadData(reset = true) {
 				if (this.loading) return;
-				console.log("reset: " + reset + ", nomore: " + this.noMore)
 				if (reset) {
 					this.page = 1;
 					this.noMore = false;
@@ -122,7 +121,6 @@
 					}
 					// 判断是否还有更多
 					this.noMore = this.projects.length >= total;
-					console.log(this.noMore)
 				} catch (err) {
 					console.error('加载失败', err);
 					uni.showToast({
@@ -217,16 +215,18 @@
 	.page {
 		display: flex;
 		flex-direction: column;
-		height: 100vh;
+		height: 88vh;
 		background-color: #f5f6fa;
 	}
 
 	.header-sticky {
 		position: sticky;
 		top: 0;
-		z-index: 5;
+		z-index: 10;
 		background-color: #f5f6fa;
 		padding-bottom: 8rpx;
+		/* 添加阴影以增强固定效果的视觉体验 */
+		box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
 	}
 
 	.search-bar {
@@ -259,6 +259,8 @@
 	.list-scroll {
 		flex: 1;
 		padding: 0 24rpx;
+		/* 确保滚动区域正确填充剩余空间 */
+		overflow-y: auto;
 	}
 
 	.list-container {

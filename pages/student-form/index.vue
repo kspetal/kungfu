@@ -42,64 +42,6 @@
 					<text class="label">住址</text>
 					<input class="input" v-model="form.address" placeholder="请输入住址" />
 				</view>
-			</view>
-		</view>
-
-		<view class="section">
-			<view class="section-header" @tap="toggleFold('project')">
-				<text>项目信息</text>
-				<text class="arrow">{{ fold.project ? '▼' : '▲' }}</text>
-			</view>
-			<view v-if="fold.project" class="section-body">
-				<view class="form-item">
-					<text class="label">项目 *</text>
-					<picker :range="projectRange" @change="onProjectChange">
-						<view class="picker">
-							{{ recordForm.project_name || '请选择项目' }}
-						</view>
-					</picker>
-				</view>
-				<view class="form-item">
-					<text class="label">卡种</text>
-					<input class="input" v-model="recordForm.card_type" placeholder="如 次卡 / 期卡" />
-				</view>
-				<view class="form-item">
-					<text class="label">开始日期 *</text>
-					<picker mode="date" @change="(e) => (recordForm.start_time = e.detail.value + ' 00:00:00')">
-						<view class="picker">
-							{{ formatDate(recordForm.start_time) || '请选择日期' }}
-						</view>
-					</picker>
-				</view>
-				<view class="form-item">
-					<text class="label">截止日期 *</text>
-					<picker mode="date" @change="(e) => (recordForm.end_time = e.detail.value + ' 00:00:00')">
-						<view class="picker">
-							{{ formatDate(recordForm.end_time) || '请选择日期' }}
-						</view>
-					</picker>
-				</view>
-				<view class="form-item">
-					<text class="label">学时时长 *</text>
-					<input class="input" type="number" v-model="recordForm.course_date" placeholder="请输入课时数" />
-				</view>
-			</view>
-		</view>
-
-		<view class="section">
-			<view class="section-header" @tap="toggleFold('payment')">
-				<text>付费资料</text>
-				<text class="arrow">{{ fold.payment ? '▼' : '▲' }}</text>
-			</view>
-			<view v-if="fold.payment" class="section-body">
-				<view class="form-item">
-					<text class="label">定金</text>
-					<input class="input" type="number" v-model="recordForm.deposit" placeholder="请输入定金" />
-				</view>
-				<view class="form-item">
-					<text class="label">总费用 *</text>
-					<input class="input" type="number" v-model="recordForm.total_fee" placeholder="请输入总金额" />
-				</view>
 				<view class="form-item">
 					<text class="label">来源渠道</text>
 					<picker :range="sourceRange" @change="onSourceChange">
@@ -107,6 +49,21 @@
 							{{ sourceRange[form.source - 1] || '请选择' }}
 						</view>
 					</picker>
+				</view>
+				<view class="form-item">
+					<text class="label">状态</text>
+					<picker :range="statusRange" @change="onStatusChange">
+						<view class="picker">
+							{{ form.status || '在学' }}
+						</view>
+					</picker>
+				</view>
+				<view class="form-item">
+					<text class="label">头像</text>
+					<view class="avatar-upload">
+						<uni-file-picker v-model="imageValue" fileMediatype="image" mode="grid" :limit="1"
+							@select="select" @progress="progress" @success="success" @fail="fail" />
+					</view>
 				</view>
 			</view>
 		</view>
@@ -118,18 +75,15 @@
 </template>
 
 <script>
-	import {
-		createStudent,
-		updateStudent,
-		createRecord,
-		updateRecord
-	} from '@/services/api.js'
+	// import {
+	// 	createStudent,
+	// 	updateStudent,
+	// } from '@/services/api.js'
 
 	export default {
 		data() {
 			return {
 				id: '',
-				recordId: '',
 				form: {
 					name: '',
 					gender: '',
@@ -138,33 +92,22 @@
 					parent_phone: '',
 					parent_wx: '',
 					address: '',
+					avatar_url: '',
 					source: 0,
 					status: '在学'
 				},
-				recordForm: {
-					project_name: '',
-					card_type: '',
-					start_time: '',
-					end_time: '',
-					course_date: '',
-					deposit: '',
-					total_fee: '',
-					status: 1 // 1-生效中
-				},
+				imageValue: [],
 				fold: {
 					profile: true,
-					project: true,
-					payment: true
 				},
 				genderRange: ['男', '女'],
-				projectRange: ['瑜伽', '私教课', '瑜伽大班', '拳击课', '普拉提'],
-				sourceRange: ['路过看到', '早晚知道', '朋友介绍', '网络活动', '其他方式']
+				sourceRange: ['路过看到', '早晚知道', '朋友介绍', '网络活动', '其他方式'],
+				statusRange: ['在学', '暂停', '已休学']
 			}
 		},
 		onLoad(query) {
 			if (query.id) {
 				this.id = query.id
-				this.recordId = query.recordId || ''
 				this.loadFromStore()
 			}
 		},
@@ -180,13 +123,13 @@
 				const index = Number(e.detail.value)
 				this.form.gender = index === 0 ? 'M' : 'F'
 			},
-			onProjectChange(e) {
-				const index = Number(e.detail.value)
-				this.recordForm.project_name = this.projectRange[index]
-			},
 			onSourceChange(e) {
 				const index = Number(e.detail.value)
 				this.form.source = index + 1
+			},
+			onStatusChange(e) {
+				const index = Number(e.detail.value)
+				this.form.status = this.statusRange[index]
 			},
 			loadFromStore() {
 				const app = getApp()
@@ -202,50 +145,65 @@
 						parent_phone: found.parent_phone || '',
 						parent_wx: found.parent_wx || '',
 						address: found.address || '',
+						avatar_url: found.avatar_url || '',
 						source: found.source || 0,
 						status: found.status || '在学'
 					}
-					// 填充课程记录信息（取第一个生效中的记录或第一个记录）
-					const records = found.records || []
-					const activeRecord = records.find(r => r.status === 1) || records[0] || {}
-					if (this.recordId) {
-						const targetRecord = records.find(r => String(r._id) === String(this.recordId))
-						if (targetRecord) {
-							Object.assign(this.recordForm, {
-								project_name: targetRecord.project_name || '',
-								card_type: targetRecord.card_type || '',
-								start_time: targetRecord.start_time || '',
-								end_time: targetRecord.end_time || '',
-								course_date: targetRecord.course_date || '',
-								deposit: targetRecord.deposit || '',
-								total_fee: targetRecord.total_fee || '',
-								status: targetRecord.status || 1
-							})
-						}
-					} else if (activeRecord._id) {
-						Object.assign(this.recordForm, {
-							project_name: activeRecord.project_name || '',
-							card_type: activeRecord.card_type || '',
-							start_time: activeRecord.start_time || '',
-							end_time: activeRecord.end_time || '',
-							course_date: activeRecord.course_date || '',
-							deposit: activeRecord.deposit || '',
-							total_fee: activeRecord.total_fee || '',
-							status: activeRecord.status || 1
-						})
-					}
+
+				} else {
+					this.loadStudent()
 				}
 			},
 			validate() {
 				if (!this.form.name) return '请输入姓名'
-				if (!this.recordForm.project_name) return '请选择项目'
 				if (!this.form.parent_phone) return '请输入家长电话'
-				if (!this.recordForm.start_time || !this.recordForm.end_time) return '请选择起止日期'
-				if (!this.recordForm.course_date) return '请输入学时时长'
-				if (!this.recordForm.total_fee) return '请输入总费用'
 				return ''
 			},
-			async handleSubmit() {
+			async loadStudent() {
+				const res = await uniCloud.callFunction({
+					name: 'getStudentDetail',
+					data: {
+						id: this.id
+					}
+				});
+				this.form = res.result.code === 0 ? res.result.data : {}
+			},
+			async addStudent() {
+				console.log(this.imageValue)
+				this.form.avatar_url = this.imageValue ? this.imageValue[0].url : this.form.avatar_url
+				await uniCloud.callFunction({
+					name: 'addStudent',
+					data: {
+						student: this.form
+					}
+				});
+			},
+			async updateStudent() {
+				console.log(this.imageValue)
+				this.form.avatar_url = this.imageValue ? this.imageValue[0].url : this.form.avatar_url
+				await uniCloud.callFunction({
+					name: 'updateStudent',
+					data: {
+						student: {
+							_id: this.id,
+							...this.form
+						}
+					}
+				});
+			},
+			select(e) {
+				console.log('选择文件：', e)
+			},
+			progress(e) {
+				console.log('上传进度：', e)
+			},
+			success(e) {
+				console.log('上传成功')
+			},
+			fail(e) {
+				console.log('上传失败：', e)
+			},
+			handleSubmit() {
 				const msg = this.validate()
 				if (msg) {
 					uni.showToast({
@@ -258,23 +216,10 @@
 					// 先保存/更新学员信息
 					let studentId = this.id
 					if (studentId) {
-						await updateStudent(studentId, this.form)
+						this.updateStudent()
 					} else {
-						const studentRes = await createStudent(this.form)
-						studentId = studentRes._id || studentRes.id
+						this.addStudent()
 					}
-
-					// 再保存/更新课程记录
-					const recordPayload = {
-						...this.recordForm,
-						student_id: studentId
-					}
-					if (this.recordId) {
-						await updateRecord(this.recordId, recordPayload)
-					} else {
-						await createRecord(recordPayload)
-					}
-
 					uni.showToast({
 						title: '保存成功',
 						icon: 'success'
@@ -365,5 +310,62 @@
 	.btn {
 		border-radius: 999rpx;
 		font-size: 30rpx;
+	}
+
+	/* 头像上传样式 */
+	.avatar-upload {
+		margin-top: 8rpx;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.avatar-preview {
+		width: 160rpx;
+		height: 160rpx;
+		border-radius: 50%;
+		border: 2rpx solid #eee;
+	}
+
+	.avatar-placeholder {
+		width: 160rpx;
+		height: 160rpx;
+		border-radius: 50%;
+		border: 2rpx dashed #ccc;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.plus-icon {
+		font-size: 60rpx;
+		color: #ccc;
+		line-height: 1;
+	}
+
+	.upload-text {
+		font-size: 24rpx;
+		color: #999;
+		margin-top: 10rpx;
+	}
+
+	.avatar-actions {
+		display: flex;
+		margin-top: 20rpx;
+	}
+
+	.action-btn {
+		font-size: 24rpx;
+		padding: 10rpx 20rpx;
+		margin: 0 10rpx;
+		background-color: #007AFF;
+		color: white;
+		border-radius: 6rpx;
+	}
+
+	.remove-btn {
+		background-color: #FF3B30;
 	}
 </style>

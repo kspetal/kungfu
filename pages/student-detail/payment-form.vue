@@ -9,7 +9,10 @@
 				<!-- 项目名称 -->
 				<view class="form-item">
 					<text class="label">项目名称</text>
-					<input type="text" class="input" v-model="formData.project_name" placeholder="请输入项目名称" />
+					<picker @change="onProjectChange" :value="currentProjectIndex" :range="projectOptions"
+						:range-key="'project_name'" class="picker">
+						<view class="picker-content">{{ projectOptions[currentProjectIndex].project_name }}</view>
+					</picker>
 				</view>
 
 				<!-- 卡类型 -->
@@ -21,7 +24,7 @@
 				<!-- 状态 -->
 				<view class="form-item">
 					<text class="label">状态</text>
-					<picker :range="statusOptions" :range-key="'name'" v-model="formData.status" class="picker">
+					<picker :range="statusOptions" :range-key="'name'" @change="onStatusChange" class="picker">
 						<view class="picker-content">{{ statusOptions[formData.status].name }}</view>
 					</picker>
 				</view>
@@ -87,14 +90,28 @@
 					start_time: '',
 					end_time: ''
 				},
+				currentProjectIndex: 0,
+				projectOptions: [{
+					_id: 'custom',
+					project_name: '常规项目',
+					card_type: '',
+					card_date: '',
+					start_time: '',
+					end_time: '',
+					deposit: '',
+					total_fee: '',
+					create_time: '',
+					status: 1
+				}],
 				startDate: '',
 				endDate: '',
 				statusOptions: [{
-						value: 1,
-						name: '生效中'
-					}, {
 						value: 0,
 						name: '已过期'
+					},
+					{
+						value: 1,
+						name: '生效中'
 					},
 					{
 						value: 2,
@@ -122,10 +139,83 @@
 				this.formData.start_time = this.startDate
 				this.formData.end_time = this.endDate
 			}
+			// 加载项目列表
+			this.loadProjectList();
 		},
 		methods: {
 			goBack() {
 				uni.navigateBack()
+			},
+			async loadProjectList() {
+				try {
+					const res = await uniCloud.callFunction({
+						name: 'getProjectList',
+						data: {
+							page: 1,
+							pageSize: 100 // 获取所有项目
+						}
+					});
+
+					if (res.result && res.result.code === 0) {
+						// 将API返回的项目列表添加到选项中，保留"常规项目"作为第一个选项
+						const activeProject = res.result.data.filter(item => item.status === 1)
+						const apiProjects = activeProject || [];
+						this.projectOptions = [{
+								_id: 'custom',
+								project_name: '常规项目',
+								card_type: '',
+								card_date: '',
+								start_time: '',
+								end_time: '',
+								deposit: '',
+								total_fee: '',
+								create_time: '',
+								status: 1
+							},
+							...apiProjects
+						];
+					} else {
+						console.error('获取项目列表失败:', res.result?.msg || '未知错误');
+					}
+				} catch (error) {
+					console.error('获取项目列表异常:', error);
+					uni.showToast({
+						title: '获取项目列表失败',
+						icon: 'none'
+					});
+				}
+			},
+			onProjectChange(e) {
+				const index = e.detail.value;
+				this.currentProjectIndex = index;
+				const selectedProject = this.projectOptions[index];
+
+				// 如果选择的是"常规项目"，不填充数据
+				if (selectedProject._id === 'custom') {
+					// 保持现有数据不变或重置为默认值
+					return;
+				}
+
+				// 填充项目数据
+				this.formData.card_type = selectedProject.card_type || '';
+				this.formData.total_fee = selectedProject.total_fee || '';
+				this.formData.deposit = selectedProject.deposit || '';
+
+				// 设置开始和结束时间
+				if (selectedProject.start_time) {
+					this.startDate = selectedProject.start_time;
+					this.formData.start_time = selectedProject.start_time;
+				}
+				if (selectedProject.end_time) {
+					this.endDate = selectedProject.end_time;
+					this.formData.end_time = selectedProject.end_time;
+				}
+
+				// 设置状态
+				this.formData.status = 1;
+			},
+			onStatusChange(e) {
+				this.formData.status = e.detail.value;
 			},
 			formatDate(date) {
 				const year = date.getFullYear()
@@ -146,13 +236,12 @@
 				uni.showLoading({
 					title: '加载中...'
 				})
-				getRecordDetail()
+				this.getRecordDetail()
 				uni.hideLoading()
-
 			},
 			async getRecordDetail() {
 				const res = await uniCloud.callFunction({
-					name: getRecordDetail,
+					name: "getRecordDetail",
 					data: {
 						id: this.recordId
 					}
@@ -165,9 +254,8 @@
 				}
 			},
 			async addRecord() {
-				this.formData._id = ''
 				const res = await uniCloud.callFunction({
-					name: addRecord,
+					name: "addRecord",
 					data: {
 						record: this.formData
 					}
@@ -177,7 +265,7 @@
 			async updateRecord() {
 				this.formData._id = this.recordId
 				const res = await uniCloud.callFunction({
-					name: updateRecord,
+					name: "updateRecord",
 					data: {
 						record: this.formData
 					}
@@ -207,7 +295,9 @@
 				uni.showLoading({
 					title: '提交中...'
 				})
+				console.log(this.formData)
 				const res = this.isEdit ? this.updateRecord() : this.addRecord()
+				console.log(res)
 				if (res) {
 					uni.showToast({
 						title: this.isEdit ? '修改成功' : '新增成功',

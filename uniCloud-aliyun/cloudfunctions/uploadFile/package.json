@@ -1,0 +1,14 @@
+{
+  "name": "uploadFile",
+  "version": "1.0.0",
+  "description": "文件上传云函数",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "uni-id-common": "file:../common/uni-id-common"
+  },
+  "author": "",
+  "license": "ISC"
+}

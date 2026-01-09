@@ -57,7 +57,7 @@
 						<view class="progress-header">
 							<text class="progress-label">课时进度: {{ item.progressValue }}%</text>
 							<text class="progress-text">
-								剩余 {{ (item.current_total_course_date - item.current_use_date) || 0 }} /
+								剩余 {{ item.remainDate || 0 }} /
 								{{ item.current_total_course_date || 0 }} 节
 							</text>
 						</view>
@@ -141,6 +141,7 @@
 					} = res.result.data;
 					const processed = list.map(item => ({
 						...item,
+						remainDate: this.getDaysDifference(item.end_time),
 						progressValue: this.calcProgress(item),
 						progressColor: this.calcProgressColor(item)
 					}));
@@ -194,19 +195,36 @@
 			},
 			calcProgress(item) {
 				const total = item.current_total_course_date
-				const remaining = item.current_total_course_date - item.current_use_date
+				const remaining = this.getDaysDifference(item.end_time)
 				if (!total) return 0
 				const used = total - remaining
 				return Math.round(Math.min(100, Math.max(0, (used / total) * 100)))
 			},
 			calcProgressColor(item) {
 				const total = item.current_total_course_date
-				const remaining = item.current_total_course_date - item.current_use_date
+				const remaining = this.getDaysDifference(item.end_time)
 				if (!total) return '#4CAF50'
 				const ratio = remaining / total
 				if (ratio <= 0.2) return '#FF4D4F'
 				if (ratio <= 0.5) return '#1890FF'
 				return '#4CAF50'
+			},
+			getDaysDifference(dateStr) {
+			  // 1. 解析输入的字符串日期（格式：yyyy-MM-dd）
+			  const inputDate = new Date(dateStr);
+			  
+			  // 2. 获取今天的日期（忽略时间部分）
+			  const today = new Date();
+			  today.setHours(0, 0, 0, 0); // 重置时间为 00:00:00.000
+			
+			  // 3. 重置 inputDate 的时间部分（避免时区/时间影响）
+			  inputDate.setHours(0, 0, 0, 0);
+			
+			  // 4. 计算毫秒差，再转为天数
+			  const diffInMs = inputDate - today;
+			  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+			
+			  return diffInDays;
 			},
 			goDetail(item) {
 				uni.navigateTo({
@@ -226,7 +244,7 @@
 	.page {
 		display: flex;
 		flex-direction: column;
-		height: 100vh;
+		height: 88vh;
 		background-color: #f5f6fa;
 	}
 

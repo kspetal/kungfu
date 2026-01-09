@@ -50,9 +50,9 @@
 
 				<view class="form-item">
 					<text class="label">状态</text>
-					<picker :range="statusRange" @change="onStateChange">
+					<picker  :range="statusRange" @change="onStateChange">
 						<view class="picker">
-							{{ statusRange[form.status - 1] || '请选择' }}
+							{{ formatState(form.status) || '请选择' }}
 						</view>
 					</picker>
 				</view>
@@ -173,9 +173,19 @@
 				if (!dateStr) return ''
 				return dateStr.split(' ')[0]
 			},
+			formatState(state) {
+				if(state === 0) {
+					return "停用"
+				}
+				if(state === 1) {
+					return "启用"
+				}
+				return ""
+			},
 			onStateChange(e) {
 				const value = e.detail.value
-				this.form.status = value === '启用' ? 1 : 0
+				console.log(e.detail)
+				this.form.status = value === 1 ? 0 : 1
 				console.log(this.form.status)
 			},
 			async submitForm() {

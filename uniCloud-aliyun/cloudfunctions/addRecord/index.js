@@ -1,12 +1,19 @@
 'use strict';
 
+const {
+	updateStudentInfo
+} = require('util-common')
+
 const db = uniCloud.databaseForJQL()
 
 exports.main = async (event, context) => {
 	try {
-		const record = event.record;
+		let record = event.record;
+		delete record._id
 		const recordRes = await db.collection('record').add(record)
-		console("record add: " + JSON.stringify(recordRes))
+		setTimeout(() => {
+			updateStudentInfo(record.student_id);
+		}, 0);
 		return {
 			code: 0,
 			msg: 'success'
@@ -17,5 +24,4 @@ exports.main = async (event, context) => {
 			msg: err.message
 		};
 	}
-	
 };
