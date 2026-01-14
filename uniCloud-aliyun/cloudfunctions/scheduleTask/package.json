@@ -1,0 +1,7 @@
+{
+  "name": "scheduleTask",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}
