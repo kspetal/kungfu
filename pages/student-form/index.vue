@@ -46,7 +46,7 @@
 					<text class="label">来源渠道</text>
 					<picker :range="sourceRange" @change="onSourceChange">
 						<view class="picker">
-							{{ sourceRange[form.source - 1] || '请选择' }}
+							{{ form.source || '请选择' }}
 						</view>
 					</picker>
 				</view>
@@ -101,7 +101,7 @@
 					profile: true,
 				},
 				genderRange: ['男', '女'],
-				sourceRange: ['路过看到', '早晚知道', '朋友介绍', '网络活动', '其他方式'],
+				sourceRange: ['路过看到', '朋友介绍', '网络活动', '早就知道', '其他方式'],
 				statusRange: ['在学', '暂停', '已休学']
 			}
 		},
@@ -125,7 +125,7 @@
 			},
 			onSourceChange(e) {
 				const index = Number(e.detail.value)
-				this.form.source = index + 1
+				this.form.source = this.sourceRange[index]
 			},
 			onStatusChange(e) {
 				const index = Number(e.detail.value)

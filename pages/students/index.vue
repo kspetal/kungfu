@@ -64,7 +64,6 @@
 						<view class="progress-bar">
 							<view class="progress-inner"
 								:style="{ width: item.progressValue + '%', background: item.progressColor }" />
-<!-- 							<text class="progress-percent">%</text> -->
 						</view>
 					</view>
 				</view>
@@ -96,7 +95,8 @@
 				boyAvatar: '/static/boy.png',
 				girlAvatar: '/static/girl.png',
 				loading: false,
-				noMore: false
+				noMore: false,
+				needRefresh: false 
 			}
 		},
 		onLoad() {
@@ -107,6 +107,12 @@
 			// 粗略估算顶部高度：搜索栏(120rpx≈60px) + 筛选栏(80rpx≈40px) + 安全区 ≈ 120px
 			const topBarHeight = 120; // 单位 px
 			this.listHeight = sys.windowHeight - topBarHeight;
+		},
+		onShow() {
+			if(this.needRefresh) {
+				this.loadData()
+				this.needRefresh = false
+			}
 		},
 		methods: {
 			async loadData(reset = true) {
@@ -227,6 +233,7 @@
 			  return diffInDays;
 			},
 			goDetail(item) {
+				this.needRefresh = true
 				uni.navigateTo({
 					url: `/pages/student-detail/index?id=${item._id}`
 				})
@@ -244,7 +251,7 @@
 	.page {
 		display: flex;
 		flex-direction: column;
-		height: 88vh;
+		height: 98vh;
 		background-color: #f5f6fa;
 	}
 

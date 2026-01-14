@@ -45,7 +45,7 @@
 				</view>
 				<view class="row">
 					<text class="label">来源渠道</text>
-					<text class="value">{{ student.source ? sourceRange[student.source - 1] : '-' }}</text>
+					<text class="value">{{ student.source ? student.source : '-' }}</text>
 				</view>
 			</view>
 
@@ -153,11 +153,14 @@
 				noMore: false,
 				boyAvatar: '/static/boy.png',
 				girlAvatar: '/static/girl.png',
-				sourceRange: ['路过看到', '早晚知道', '朋友介绍', '网络活动', '其他方式'],
+				needRefresh: false
 			}
 		},
 		onShow() {
-			this.loadRecords(true);
+			if(this.needRefresh) {
+				this.loadRecords(true);
+				this.needRefresh = false;
+			}
 		},
 		onLoad(query) {
 			this.id = query.id
@@ -285,6 +288,7 @@
 				return map[source] || '-'
 			},
 			goEdit() {
+				this.needRefresh = true
 				uni.navigateTo({
 					url: `/pages/student-form/index?id=${this.id}&recordId=${this.getActiveRecord()?._id || ''}`
 				})
@@ -320,7 +324,8 @@
 					success: async (res) => {
 						if (res.confirm) {
 							try {
-								await deleteStudent(this.id)
+								await this.deleteStudent(this.id)
+								await this.deleteStudentRecord(this.id)
 								uni.showToast({
 									title: '已删除',
 									icon: 'success'
@@ -371,7 +376,6 @@
 					name: 'removeRecord',
 					data: {
 						id: _id,
-						student_id: student_id
 					}
 				});
 			},
@@ -380,6 +384,14 @@
 					name: 'removeStudent',
 					data: {
 						id: _id
+					}
+				});
+			},
+			async deleteStudentRecord(student_id) {
+				const res = await uniCloud.callFunction({
+					name: 'removeRecord',
+					data: {
+						student_id: student_id
 					}
 				});
 			},

@@ -9,9 +9,10 @@ const db = uniCloud.databaseForJQL()
 exports.main = async (event, context) => {
 	try {
 		const record = event.record;
+		const id = record._id
 		delete record._id
 		await db.collection('record').where({
-			_id: record._id
+			_id: id
 		}).update(record);
 		setTimeout(() => {
 			updateStudentInfo(record.student_id);

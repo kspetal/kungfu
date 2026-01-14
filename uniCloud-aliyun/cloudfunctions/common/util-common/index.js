@@ -43,7 +43,10 @@ async function updateStudentInfo(student_id) {
 				student.first_time = firstDay;
 				student.total_fee = totalFee;
 			}
-			const { _id, ...updateData } = student;
+			const {
+				_id,
+				...updateData
+			} = student;
 			await db.collection('student').where({
 				_id: _id
 			}).update(updateData);
@@ -65,42 +68,40 @@ function getDaysBetween(startDateStr, endDateStr) {
 function getTotalUniqueDays(periods) {
 	if (!periods || periods.length === 0) return 0;
 
-	// 工具函数：解析 yyyy-MM-dd 为 Date（本地时间）
 	const parseDate = (str) => {
 		const [y, m, d] = str.split('-').map(Number);
 		return new Date(y, m - 1, d);
 	};
 
-	// 转为 { start: Date, end: Date } 并排序
 	let intervals = periods.map(p => ({
 		start: parseDate(p.start_time),
 		end: parseDate(p.end_time)
 	})).sort((a, b) => a.start - b.start);
 
-	// 合并重叠区间
-	const merged = [];
-	let current = intervals[0];
+	const merged = [intervals[0]];
 
 	for (let i = 1; i < intervals.length; i++) {
-		if (intervals[i].start <= new Date(current.end.getTime() + 24 * 60 * 60 * 1000)) {
-			// 重叠或相邻（+1天判断是否连续）
-			current.end = current.end > intervals[i].end ? current.end : intervals[i].end;
+		const current = merged[merged.length - 1];
+		const next = intervals[i];
+
+		// 判断是否重叠或连续（end >= next.start - 1天）
+		if (current.end >= new Date(next.start.getTime() - 24 * 60 * 60 * 1000)) {
+			current.end = current.end > next.end ? current.end : next.end;
 		} else {
-			merged.push(current);
-			current = intervals[i];
+			merged.push(next);
 		}
 	}
-	merged.push(current);
-	// 计算总天数（每个区间：end - start 的天数 + 1）
-	let totalDays = 0;
-	for (const interval of merged) {
-		const diffTime = interval.end - interval.start;
-		const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-		// 包含起止日
-		totalDays += diffDays + 1;
-	}
 
-	return totalDays;
+	let total = 0;
+	for (const {
+			start,
+			end
+		}
+		of merged) {
+		const days = Math.floor((end - start) / (1000 * 60 * 60 * 24)) + 1;
+		total += days;
+	}
+	return total;
 }
 
 module.exports = {

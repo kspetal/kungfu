@@ -2,11 +2,11 @@
 exports.main = async (event, context) => {
 	try {
 		let student = event.student;
+		const id = student._id;
 		delete student._id
 		const studentRes = await db.collection('student').where({
-			_id: student._id
+			_id: id
 		}).update(student);
-		// console.log("update student: " + JSON.stringify(studentRes))
 		return {
 			code: 0,
 			msg: 'success',

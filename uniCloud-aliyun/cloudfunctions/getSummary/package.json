@@ -1,0 +1,7 @@
+{
+  "name": "getSummary",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}
