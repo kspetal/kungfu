@@ -90,7 +90,7 @@
 				keyword: '',
 				state: '',
 				page: 1,
-				pageSize: 20,
+				pageSize: 10,
 				students: [],
 				listHeight: 0,
 				boyAvatar: '/static/boy.png',

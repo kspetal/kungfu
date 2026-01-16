@@ -64,7 +64,7 @@
 			return {
 				keyword: '',
 				page: 1,
-				pageSize: 20,
+				pageSize: 15,
 				projects: [],
 				listHeight: 0,
 				loading: false,
