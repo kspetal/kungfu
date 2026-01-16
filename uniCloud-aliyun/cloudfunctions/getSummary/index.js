@@ -8,7 +8,7 @@ exports.main = async (event, context) => {
 	const yearStart = new Date(now.getFullYear(), 0, 1).toISOString().slice(0, 10);
 
 	const totalFeeRes = await db.collection('record').where({
-			start_time: dbCmd.gt(yearStart)
+			start_time: dbCmd.gte(yearStart)
 		})
 		.field('sum(total_fee) as totalFee')
 		.get();

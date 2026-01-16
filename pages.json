@@ -42,7 +42,7 @@
     {
       "path": "pages/student-detail/payment-form",
       "style": {
-        "navigationBarTitleText": "添加缴费记录",
+        "navigationBarTitleText": "缴费记录",
         "enablePullDownRefresh": false,
         "backgroundColor": "#FFFFFF"
       }

@@ -75,10 +75,6 @@
 </template>
 
 <script>
-	// import {
-	// 	createStudent,
-	// 	updateStudent,
-	// } from '@/services/api.js'
 
 	export default {
 		data() {

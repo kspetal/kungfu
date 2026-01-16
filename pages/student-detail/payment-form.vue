@@ -320,9 +320,11 @@
 
 <style scoped>
 	.page {
-		padding: 16rpx 24rpx 120rpx;
+		padding: 16rpx 24rpx;
+		padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
 		background-color: #f5f6fa;
 		box-sizing: border-box;
+		height: 100vh;
 	}
 
 	.header {
@@ -423,6 +425,7 @@
 		right: 0;
 		bottom: 0;
 		padding: 16rpx 24rpx 32rpx;
+		padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
 		background-color: #ffffff;
 		box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.05);
 	}

@@ -413,14 +413,13 @@
 	.page {
 		display: flex;
 		flex-direction: column;
-		min-height: 130vh;
+		height: 100vh;
 		padding-bottom: env(safe-area-inset-bottom);
 	}
 
 	.scroll-view {
 		flex: 1;
-		height: calc(100vh - 120rpx);
-		/* 减去底部操作按钮的高度 */
+		height: calc(100vh - 150rpx);
 	}
 
 	.card {
@@ -469,21 +468,6 @@
 		font-size: 24rpx;
 		padding: 6rpx 16rpx;
 		border-radius: 30rpx;
-	}
-
-	.status.在学 {
-		background-color: #e8f4ff;
-		color: #1890ff;
-	}
-
-	.status.停课 {
-		background-color: #fff3e0;
-		color: #fa8c16;
-	}
-
-	.status.结业 {
-		background-color: #f0f0f0;
-		color: #8c8c8c;
 	}
 
 	.sub {

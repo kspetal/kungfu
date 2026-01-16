@@ -215,7 +215,7 @@
 	.page {
 		display: flex;
 		flex-direction: column;
-		height: 88vh;
+		height: 100vh;
 		background-color: #f5f6fa;
 	}
 
@@ -369,13 +369,13 @@
 
 	.action-buttons {
 		display: flex;
-		justify-content: flex-end;
-		/* 靠右 */
+		justify-content: flex-end; /* 靠右 */
 		align-items: center;
 		border-top: 1rpx solid #eee;
 		padding-top: 22rpx;
 		padding-bottom: 4rpx;
 		height: 60rpx;
+		width: 100%; /* 占满整行，让按钮真正贴右 */
 	}
 
 	.action-btn {
@@ -386,18 +386,18 @@
 	}
 
 	.action-buttons .action-btn+.action-btn {
-		margin-left: 262rpx;
+		margin-left: 20rpx; /* 调整按钮间距，使其合适 */
 	}
 
 	.edit-btn {
-		color: #2979ff;
-		background-color: #ffffff;
+		color: #1890ff;
+		background-color: #e8f4ff;
 	}
-	
+
 
 	.delete-btn {
-		color: #ff4d4f;
-		background-color: #ffffff;
+		color: #f5222d;
+		background-color: #fff1f0;
 	}
 
 	.fab {

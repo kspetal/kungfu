@@ -56,11 +56,6 @@
 </template>
 
 <script>
-	import {
-		fetchStatsSummary,
-		fetchRevenueRank,
-		fetchExpiringStudents
-	} from '@/services/api.js'
 
 	export default {
 		data() {
@@ -154,12 +149,12 @@
 
 <style scoped>
 	.page {
-		min-height: 90vh;
+		height: 100vh;
 		background-color: #f5f6fa;
 	}
 
 	.scroll {
-		height: 90vh;
+		height: 100vh;
 		padding: 24rpx;
 		box-sizing: border-box;
 	}

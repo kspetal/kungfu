@@ -78,9 +78,7 @@
 </template>
 
 <script>
-	// import {
-	// 	fetchStudents
-	// } from '@/services/api.js'
+
 	import { useGlobalStore } from '@/store'
 
 	export default {
@@ -251,7 +249,7 @@
 	.page {
 		display: flex;
 		flex-direction: column;
-		height: 98vh;
+		height: 100vh;
 		background-color: #f5f6fa;
 	}
 
