@@ -133,10 +133,7 @@
 </template>
 
 <script>
-	// import {
-	// 	deleteStudent,
-	// 	fetchStudentRecords
-	// } from '@/services/api.js'
+
 	import {
 		useGlobalStore
 	} from '@/store'
@@ -159,6 +156,7 @@
 		onShow() {
 			if(this.needRefresh) {
 				this.loadRecords(true);
+				this.loadStudent();
 				this.needRefresh = false;
 			}
 		},
@@ -277,16 +275,6 @@
 				if (status === 2) return 'status-paused'
 				return ''
 			},
-			getSourceText(source) {
-				const map = {
-					1: '路过看到',
-					2: '早晚知道',
-					3: '朋友介绍',
-					4: '网络活动',
-					5: '其他方式'
-				}
-				return map[source] || '-'
-			},
 			goEdit() {
 				this.needRefresh = true
 				uni.navigateTo({
@@ -294,29 +282,17 @@
 				})
 			},
 			goAddPayment() {
+				this.needRefresh = true
 				uni.navigateTo({
 					url: './payment-form?id=' + this.id + '&type=add'
 				})
 			},
 			goEditPayment(record) {
+				this.needRefresh = true
 				uni.navigateTo({
 					url: './payment-form?id=' + this.id + '&type=edit&recordId=' + record._id
 				})
 			},
-			confirmDelete() {
-				// 这里需要调用删除缴费记录的API
-				uni.showToast({
-					title: '删除成功',
-					icon: 'success'
-				})
-				// 从本地列表中移除
-				// const index = this.records.findIndex(item => item._id === this.currentDeleteRecord._id)
-				// if (index > -1) {
-				// 	this.records.splice(index, 1)
-				// }
-				this.hideDeleteDialog()
-			},
-
 			handleDelete() {
 				uni.showModal({
 					title: '删除确认',
@@ -351,7 +327,6 @@
 					success: async (res) => {
 						if (res.confirm) {
 							try {
-								// console.log(record)
 								await this.deleteRecord(record._id, record.student_id)
 								uni.showToast({
 									title: '已删除',

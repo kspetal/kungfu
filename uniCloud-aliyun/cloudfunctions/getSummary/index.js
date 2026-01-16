@@ -22,7 +22,7 @@ exports.main = async (event, context) => {
 		code: 0,
 		msg: 'success',
 		data: {
-			totalFee: totalFeeRes.data[0]?.totalFee || 0,
+			totalFee: totalFeeRes.data.reduce((acc, item) => acc + (item.totalFee || 0), 0),
 			studentCount: countRes.total || 0,
 			source: sourceRes.data
 		}

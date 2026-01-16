@@ -42,7 +42,7 @@ exports.main = async (event, context) => {
 		// 2. 查询当前页数据（按时间倒序）
 		const dataRes = await collection
 			.where(whereCondition)
-			.orderBy('first_time', 'asc')
+			.orderBy('first_time', 'desc')
 			.skip(skip)
 			.limit(size)
 			.get();

@@ -52,7 +52,7 @@
 					<text class="label">总费用</text>
 					<view class="price-input">
 						<text class="price-symbol">¥</text>
-						<input type="number" class="input" v-model="formData.total_fee" placeholder="0.00" />
+						<input type="number" class="input" v-model="formData.total_fee" placeholder="请输入数字" />
 					</view>
 				</view>
 
@@ -61,7 +61,7 @@
 					<text class="label">定金</text>
 					<view class="price-input">
 						<text class="price-symbol">¥</text>
-						<input type="number" class="input" v-model="formData.deposit" placeholder="0.00" />
+						<input type="number" class="input" v-model="formData.deposit" placeholder="请输入数字" />
 					</view>
 				</view>
 			</view>
@@ -86,7 +86,7 @@
 					card_type: '',
 					status: 1, // 默认生效中
 					total_fee: '',
-					deposit: '',
+					deposit: 0,
 					start_time: '',
 					end_time: ''
 				},
@@ -98,7 +98,7 @@
 					card_date: '',
 					start_time: '',
 					end_time: '',
-					deposit: '',
+					deposit: 0,
 					total_fee: '',
 					create_time: '',
 					status: 1
@@ -167,7 +167,7 @@
 								card_date: '',
 								start_time: '',
 								end_time: '',
-								deposit: '',
+								deposit: 0,
 								total_fee: '',
 								create_time: '',
 								status: 1
@@ -257,7 +257,11 @@
 				const res = await uniCloud.callFunction({
 					name: "addRecord",
 					data: {
-						record: this.formData
+						record: {
+							...this.formData,
+							deposit: this.formData.deposit ? Number(this.formData.deposit) : 0,
+							total_fee: this.formData.total_fee ? Number(this.formData.total_fee) : 0
+						}
 					}
 				})
 				return res.result.code === 0;
@@ -267,7 +271,11 @@
 				const res = await uniCloud.callFunction({
 					name: "updateRecord",
 					data: {
-						record: this.formData
+						record: {
+							...this.formData,
+							deposit: this.formData.deposit ? Number(this.formData.deposit) : 0,
+							total_fee: this.formData.total_fee ? Number(this.formData.total_fee) : 0
+						}
 					}
 				})
 				return res.result.code === 0;
@@ -295,9 +303,7 @@
 				uni.showLoading({
 					title: '提交中...'
 				})
-				console.log(this.formData)
 				const res = this.isEdit ? this.updateRecord() : this.addRecord()
-				console.log(res)
 				if (res) {
 					uni.showToast({
 						title: this.isEdit ? '修改成功' : '新增成功',

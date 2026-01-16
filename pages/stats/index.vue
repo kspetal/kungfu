@@ -94,7 +94,7 @@
 			}
 		},
 		onShow() {
-			// 	this.loadAll()
+			this.loadAll()
 		},
 		onLoad() {
 			this.loadAll()

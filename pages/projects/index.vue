@@ -68,7 +68,14 @@
 				projects: [],
 				listHeight: 0,
 				loading: false,
-				noMore: false
+				noMore: false,
+				needRefresh: false
+			}
+		},
+		onShow() {
+			if (this.needRefresh) {
+				this.loadData(true)
+				this.needRefresh = false
 			}
 		},
 		onLoad() {
@@ -153,16 +160,19 @@
 				return status == 1 ? 'tag-status-enabled' : 'tag-status-disabled'
 			},
 			addProject() {
+				this.needRefresh = true;
 				uni.navigateTo({
 					url: '/pages/projects/form'
 				})
 			},
 			editProject(item) {
+				this.needRefresh = true;
 				uni.navigateTo({
 					url: `/pages/projects/form?id=${item._id}`
 				})
 			},
 			deleteProject(item) {
+				this.needRefresh = true;
 				uni.showModal({
 					title: '确认删除',
 					content: `确定要删除项目 "${item.project_name}" 吗？此操作不可恢复。`,

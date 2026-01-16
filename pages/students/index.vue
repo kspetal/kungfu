@@ -35,10 +35,12 @@
 				<view v-for="item in students" :key="item._id" class="student-card" @tap="goDetail(item)">
 					<view class="card-top">
 						<view class="left">
-							<image class="avatar" :src="item.avatar_url || (item.gender == '女' ? girlAvatar : boyAvatar)" />
+							<image class="avatar"
+								:src="item.avatar_url || (item.gender == 'F' ? girlAvatar : boyAvatar)" />
 							<view class="info">
 								<view class="name-row">
 									<text class="name">{{ item.name }}</text>
+									<text v-if="item.birth_date" class="age-tag">{{ calculateAge(item.birth_date) }}岁</text>
 								</view>
 								<view class="tags">
 									<text class="tag tag-project">{{ item.current_project || '-' }}</text>
@@ -78,8 +80,9 @@
 </template>
 
 <script>
-
-	import { useGlobalStore } from '@/store'
+	import {
+		useGlobalStore
+	} from '@/store'
 
 	export default {
 		data() {
@@ -94,7 +97,7 @@
 				girlAvatar: '/static/girl.png',
 				loading: false,
 				noMore: false,
-				needRefresh: false 
+				needRefresh: false
 			}
 		},
 		onLoad() {
@@ -107,7 +110,7 @@
 			this.listHeight = sys.windowHeight - topBarHeight;
 		},
 		onShow() {
-			if(this.needRefresh) {
+			if (this.needRefresh) {
 				this.loadData()
 				this.needRefresh = false
 			}
@@ -145,7 +148,7 @@
 					} = res.result.data;
 					const processed = list.map(item => ({
 						...item,
-						remainDate: this.getDaysDifference(item.end_time),
+						remainDate: this.getDaysDifference(item.start_time, item.end_time, item.current_total_course_date),
 						progressValue: this.calcProgress(item),
 						progressColor: this.calcProgressColor(item)
 					}));
@@ -154,7 +157,9 @@
 					} else {
 						this.students = [...this.students, ...processed];
 					}
-					const { setStudents } = useGlobalStore()
+					const {
+						setStudents
+					} = useGlobalStore()
 					setStudents(this.students)
 					// 判断是否还有更多
 					this.noMore = this.students.length >= total;
@@ -186,12 +191,6 @@
 				this.state = stat;
 				this.loadData(true);
 			},
-
-			formatDate(dateStr) {
-				if (!dateStr) return ''
-				// 如果是 yyyy-MM-dd HH:mm:ss 格式，只取日期部分
-				return dateStr.split(' ')[0]
-			},
 			getStatusClass(status) {
 				if (status === '在学') return 'tag-status-ongoing'
 				if (status === '已退学') return 'tag-status-completed'
@@ -199,36 +198,44 @@
 			},
 			calcProgress(item) {
 				const total = item.current_total_course_date
-				const remaining = this.getDaysDifference(item.end_time)
+				const remaining = this.getDaysDifference(item.start_time, item.end_time, total)
 				if (!total) return 0
 				const used = total - remaining
 				return Math.round(Math.min(100, Math.max(0, (used / total) * 100)))
 			},
 			calcProgressColor(item) {
 				const total = item.current_total_course_date
-				const remaining = this.getDaysDifference(item.end_time)
+				const remaining = this.getDaysDifference(item.start_time, item.end_time, total)
 				if (!total) return '#4CAF50'
 				const ratio = remaining / total
-				if (ratio <= 0.2) return '#FF4D4F'
-				if (ratio <= 0.5) return '#1890FF'
+				if (ratio <= 0.15) return '#FF4D4F'
+				if (ratio <= 0.3) return '#E6A23C'
 				return '#4CAF50'
 			},
-			getDaysDifference(dateStr) {
-			  // 1. 解析输入的字符串日期（格式：yyyy-MM-dd）
-			  const inputDate = new Date(dateStr);
-			  
-			  // 2. 获取今天的日期（忽略时间部分）
-			  const today = new Date();
-			  today.setHours(0, 0, 0, 0); // 重置时间为 00:00:00.000
-			
-			  // 3. 重置 inputDate 的时间部分（避免时区/时间影响）
-			  inputDate.setHours(0, 0, 0, 0);
-			
-			  // 4. 计算毫秒差，再转为天数
-			  const diffInMs = inputDate - today;
-			  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-			
-			  return diffInDays;
+			calculateAge(birthDate) {
+				const today = new Date();
+				const birth = new Date(birthDate);
+				let age = today.getFullYear() - birth.getFullYear();
+				const monthDiff = today.getMonth() - birth.getMonth();
+				
+				if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+					age--;
+				}
+				
+				return age;
+			},
+			getDaysDifference(start, end, totalDate) {
+				const startDate = new Date(start);
+				const today = new Date();
+				if (startDate.getTime() > today.getTime()) {
+					return totalDate;
+				}
+				const inputDate = new Date(end);
+				today.setHours(0, 0, 0, 0);
+				inputDate.setHours(0, 0, 0, 0);
+				const diffInMs = inputDate - today;
+				const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+				return diffInDays;
 			},
 			goDetail(item) {
 				this.needRefresh = true
@@ -237,6 +244,7 @@
 				})
 			},
 			goCreate() {
+				this.needRefresh = true
 				uni.navigateTo({
 					url: '/pages/student-form/index'
 				})
@@ -356,6 +364,21 @@
 		color: #333;
 	}
 
+	.age {
+		font-size: 24rpx;
+		color: #999;
+		margin-left: 8rpx;
+	}
+
+	.age-tag {
+		font-size: 21rpx;
+		padding: 6rpx 13rpx;
+		border-radius: 999rpx;
+		margin-left: 12rpx;
+		background-color: #f5f5f5;
+		color: #999999;
+	}
+
 	.tags {
 		margin-top: 8rpx;
 	}
@@ -432,7 +455,8 @@
 		height: 100%;
 		border-radius: 999rpx;
 	}
-/* 
+
+	/* 
 	.progress-percent {
 		position: absolute;
 		right: 16rpx;

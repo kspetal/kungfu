@@ -75,7 +75,6 @@
 </template>
 
 <script>
-
 	export default {
 		data() {
 			return {
@@ -165,8 +164,8 @@
 				this.form = res.result.code === 0 ? res.result.data : {}
 			},
 			async addStudent() {
-				console.log(this.imageValue)
-				this.form.avatar_url = this.imageValue ? this.imageValue[0].url : this.form.avatar_url
+				this.form.avatar_url = this.imageValue && this.imageValue.length > 0 ?
+					this.imageValue[0].url : this.form.avatar_url
 				await uniCloud.callFunction({
 					name: 'addStudent',
 					data: {
@@ -175,8 +174,8 @@
 				});
 			},
 			async updateStudent() {
-				console.log(this.imageValue)
-				this.form.avatar_url = this.imageValue ? this.imageValue[0].url : this.form.avatar_url
+				this.form.avatar_url = this.imageValue && this.imageValue.length > 0 ?
+					this.imageValue[0].url : this.form.avatar_url
 				await uniCloud.callFunction({
 					name: 'updateStudent',
 					data: {
