@@ -1,4 +1,7 @@
 'use strict';
+
+const db = uniCloud.databaseForJQL()
+
 exports.main = async (event, context) => {
 	try {
 		let student = event.student;

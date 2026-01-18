@@ -88,7 +88,7 @@
 					parent_wx: '',
 					address: '',
 					avatar_url: '',
-					source: 0,
+					source: '',
 					status: '在学'
 				},
 				imageValue: [],
@@ -141,7 +141,7 @@
 						parent_wx: found.parent_wx || '',
 						address: found.address || '',
 						avatar_url: found.avatar_url || '',
-						source: found.source || 0,
+						source: found.source || '',
 						status: found.status || '在学'
 					}
 
@@ -185,9 +185,6 @@
 						}
 					}
 				});
-			},
-			select(e) {
-				console.log('选择文件：', e)
 			},
 			progress(e) {
 				console.log('上传进度：', e)

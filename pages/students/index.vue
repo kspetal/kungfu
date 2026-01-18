@@ -208,8 +208,8 @@
 				const remaining = this.getDaysDifference(item.start_time, item.end_time, total)
 				if (!total) return '#4CAF50'
 				const ratio = remaining / total
-				if (ratio <= 0.15) return '#FF4D4F'
-				if (ratio <= 0.3) return '#E6A23C'
+				if (ratio <= 0.2) return '#FF4D4F'
+				if (ratio <= 0.4) return '#E6A23C'
 				return '#4CAF50'
 			},
 			calculateAge(birthDate) {

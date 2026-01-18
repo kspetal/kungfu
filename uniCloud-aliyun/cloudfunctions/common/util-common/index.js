@@ -51,31 +51,51 @@ async function updateStudentInfo(student_id) {
 				_id: _id
 			}).update(updateData);
 		}
+		if(recordRes.data.length === 0) {
+			student.current_project = "";
+			student.current_total_course_date = 0;
+			student.start_time = "";
+			student.end_time = "";
+			student.total_fee = 0;
+			const {
+				_id,
+				...updateData
+			} = student;
+			await db.collection('student').where({
+				_id: _id
+			}).update(updateData);
+		}
 		console.log('后台任务完成');
 	} catch (err) {
 		console.error('后台任务出错:', err);
 	}
 }
 
+function parseDateAsUTC(dateStr) {
+	const [y, m, d] = dateStr.split('-').map(Number);
+	return Date.UTC(y, m - 1, d); // UTC 时间戳，避免本地时区偏移
+}
+
 function getDaysBetween(startDateStr, endDateStr) {
-	const startDate = new Date(startDateStr);
-	const endDate = new Date(endDateStr);
-	const diffTime = Math.abs(endDate - startDate);
-	const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+	const start = parseDateAsUTC(startDateStr);
+	const end = parseDateAsUTC(endDateStr);
+	if (end < start) return 0; // 或交换，根据需求
+	const diffDays = Math.floor((end - start) / (1000 * 60 * 60 * 24)) + 1;
 	return diffDays;
 }
 
+// 同时建议 getTotalUniqueDays 也使用 UTC 方式解析，保持一致
 function getTotalUniqueDays(periods) {
 	if (!periods || periods.length === 0) return 0;
 
-	const parseDate = (str) => {
+	const parseDateAsUTC = (str) => {
 		const [y, m, d] = str.split('-').map(Number);
-		return new Date(y, m - 1, d);
+		return new Date(Date.UTC(y, m - 1, d));
 	};
 
 	let intervals = periods.map(p => ({
-		start: parseDate(p.start_time),
-		end: parseDate(p.end_time)
+		start: parseDateAsUTC(p.start_time),
+		end: parseDateAsUTC(p.end_time)
 	})).sort((a, b) => a.start - b.start);
 
 	const merged = [intervals[0]];
@@ -84,7 +104,7 @@ function getTotalUniqueDays(periods) {
 		const current = merged[merged.length - 1];
 		const next = intervals[i];
 
-		// 判断是否重叠或连续（end >= next.start - 1天）
+		// 判断是否重叠或连续（当前结束 >= 下一个开始 - 1天）
 		if (current.end >= new Date(next.start.getTime() - 24 * 60 * 60 * 1000)) {
 			current.end = current.end > next.end ? current.end : next.end;
 		} else {
@@ -93,12 +113,9 @@ function getTotalUniqueDays(periods) {
 	}
 
 	let total = 0;
-	for (const {
-			start,
-			end
-		}
-		of merged) {
-		const days = Math.floor((end - start) / (1000 * 60 * 60 * 24)) + 1;
+	const msPerDay = 1000 * 60 * 60 * 24;
+	for (const { start, end } of merged) {
+		const days = Math.floor((end - start) / msPerDay) + 1;
 		total += days;
 	}
 	return total;

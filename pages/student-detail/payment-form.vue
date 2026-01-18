@@ -197,6 +197,7 @@
 				}
 
 				// 填充项目数据
+				this.formData.project_name = selectedProject.project_name || '';
 				this.formData.card_type = selectedProject.card_type || '';
 				this.formData.total_fee = selectedProject.total_fee || '';
 				this.formData.deposit = selectedProject.deposit || '';

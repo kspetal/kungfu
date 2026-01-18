@@ -4,7 +4,7 @@
 			<view class="card basic-card">
 				<view class="top">
 					<image class="avatar"
-						:src="student.avatar_url || (student.gender == '女' ? girlAvatar : boyAvatar)" />
+						:src="student.avatar_url || (student.gender == 'F' ? girlAvatar : boyAvatar)" />
 					<view class="info">
 						<view class="name-row">
 							<text class="name">{{ student.name }}</text>
@@ -169,7 +169,7 @@
 		},
 		methods: {
 			loadDetail() {
-				// 简单从列表传参缓存中获取
+				//简单从列表传参缓存中获取
 				const {
 					state
 				} = useGlobalStore()
@@ -180,6 +180,7 @@
 				} else {
 					this.loadStudent()
 				}
+				// this.loadStudent()
 				this.loadRecords()
 			},
 			async loadStudent() {
@@ -189,7 +190,7 @@
 						id: this.id
 					}
 				});
-				this.students = res.result.code === 0 ? res.result.data : {}
+				this.student = res.result.code === 0 ? res.result.data : {}
 			},
 			async loadRecords(reset = true) {
 				if (this.loading) return;
