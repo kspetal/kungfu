@@ -152,6 +152,7 @@
 			validate() {
 				if (!this.form.name) return '请输入姓名'
 				if (!this.form.parent_phone) return '请输入家长电话'
+				if (!this.form.source) return '请选择学生来源'
 				return ''
 			},
 			async loadStudent() {

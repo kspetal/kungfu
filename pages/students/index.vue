@@ -193,7 +193,8 @@
 			},
 			getStatusClass(status) {
 				if (status === '在学') return 'tag-status-ongoing'
-				if (status === '已退学') return 'tag-status-completed'
+				if (status === '暂停') return 'tag-status-onPause'
+				if (status === '已休学') return 'tag-status-completed'
 				return 'tag-status-ongoing'
 			},
 			calcProgress(item) {
@@ -400,6 +401,11 @@
 		color: #3cb371;
 	}
 
+	.tag-status-onPause {
+		background-color: #ffdede;
+		color: #FF4D4F;
+	}
+	
 	.tag-status-completed {
 		background-color: #f5f5f5;
 		color: #999999;

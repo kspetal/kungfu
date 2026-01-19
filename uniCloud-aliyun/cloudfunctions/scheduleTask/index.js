@@ -1,6 +1,7 @@
 'use strict';
 
 const db = uniCloud.databaseForJQL()
+const dbCmd = db.command
 
 exports.main = async (event, context) => {
 	try {
@@ -23,12 +24,18 @@ exports.main = async (event, context) => {
 		});
 		// 定时更新暂停学生记录结束时间
 		const pauseStudents = await db.collection('student').where({
-			status: '暂停'
+			status: '暂停',
+			start_time: dbCmd.lt(totalStr)
 		}).get();
 		pauseStudents.data.forEach((student) => {
 			console.log('学生延期: ' + student.name)
 			student.end_time = addOneDay(student.end_time);
 			student.current_total_course_date = student.current_total_course_date + 1;
+			const id = student._id
+			delete student._id
+			await db.collection('student').where({
+				_id: id
+			}).update(student);
 		});
 		return {
 			code: 0,
