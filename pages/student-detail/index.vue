@@ -3,7 +3,7 @@
 		<scroll-view class="scroll-view" scroll-y @scrolltolower="onReachBottom" lower-threshold="100">
 			<view class="card basic-card">
 				<view class="top">
-					<image class="avatar"
+					<image class="avatar" @tap="previewImage"
 						:src="student.avatar_url || (student.gender == 'F' ? girlAvatar : boyAvatar)" />
 					<view class="info">
 						<view class="name-row">
@@ -257,6 +257,13 @@
 				if (!dateStr) return ''
 				return dateStr.split(' ')[0]
 			},
+			previewImage() {
+				const imageUrl = this.student.avatar_url || (this.student.gender == 'F' ? this.girlAvatar : this.boyAvatar);
+				uni.previewImage({
+					urls: [imageUrl],
+					current: 0
+				});
+			},
 			getStatusClass(status) {
 				if (status === '在学') return 'status-ongoing'
 				if (status === '已退学') return 'status-completed'
@@ -419,7 +426,7 @@
 	.avatar {
 		width: 120rpx;
 		height: 120rpx;
-		border-radius: 50%;
+/* 		border-radius: 50%; */
 		margin-right: 30rpx;
 	}
 
